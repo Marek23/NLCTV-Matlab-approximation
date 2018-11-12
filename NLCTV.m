@@ -59,7 +59,7 @@ for step=1:350
     
     if mod(step,10)==0
         
-        phi=1-(u1==BrokenAreaColor);
+        phi=1-(u2==BrokenAreaColor);
         w1=updateWeight2(u01,u1,h,kernel,t_r,s_r,p_r,phi,PHI,w1);
         w2=updateWeight2(u02,u2,h,kernel,t_r,s_r,p_r,phi,PHI,w2);
         w3=updateWeight2(u03,u3,h,kernel,t_r,s_r,p_r,phi,PHI,w3);
