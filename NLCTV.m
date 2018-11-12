@@ -15,8 +15,8 @@ f03 = f0(:,:,3);
 
 [m,n]=size(f01);
   
-p_r=2;
-s_r=5;
+p_r=3;
+s_r=6;
 p_s=p_r*2+1;
 s_s=s_r*2+1;
 t_r=p_r+s_r;
@@ -42,7 +42,7 @@ w2=zeros(s_s,s_s,m,n);
 w3=zeros(s_s,s_s,m,n);
 
 tic
-for step=1:350
+for step=1:5000
     step
     
     u1=padarray(u01,[t_r t_r],'symmetric');
@@ -102,14 +102,17 @@ for step=1:350
     
     if mod(step,10)==0
         
-%         imwrite(uint8(u0),[ '..\ren1\q' num2str(step) '.bmp']);
+%       imwrite(uint8(u0),[ '..\ren1\q' num2str(step) '.bmp']);
         uwyn(:,:,1) = u01;
         uwyn(:,:,2) = u02;
         uwyn(:,:,3) = u03;
         
         figure; imagesc(uint8(uwyn)); colormap(gray); axis off; axis equal;
         pause(1)
-        
+
+        if(sum(phi(:)) == size(phi,1)*size(phi,2))
+           break
+        end
     end
     toc
     
