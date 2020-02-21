@@ -2,8 +2,11 @@ clc
 clear
 close all
 
+%%
+imageName  = 'test_small.png';
+resultName = 'output.png';
 %% 
-f0=imread('test_small.png');
+f0=imread(imageName);
 
 %%
 figure; imagesc(f0); colormap(gray); axis off; axis equal;
@@ -43,7 +46,6 @@ w3=zeros(s_s,s_s,m,n);
 
 tic
 for step=1:5000
-    step
     
     u1=padarray(u01,[t_r t_r],'symmetric');
     u2=padarray(u02,[t_r t_r],'symmetric');
@@ -102,7 +104,6 @@ for step=1:5000
     
     if mod(step,10)==0
         
-%       imwrite(uint8(u0),[ '..\ren1\q' num2str(step) '.bmp']);
         uwyn(:,:,1) = u01;
         uwyn(:,:,2) = u02;
         uwyn(:,:,3) = u03;
