@@ -1,20 +1,11 @@
-function NLCTV()
 clc
 clear
 close all
 
-%%
-%I = imread('C:\MAREK\MAGISTERKA\Obrazy\Obr6m3.png');
-%imwrite(I,'Obr6m3.bmp') ;
-
 %% 
-f0=imread('Obr4m4.bmp');
+f0=imread('test_small.png');
 
 %%
-% f0=imnoise(f0,'salt & pepper',0.3);
-% imwrite(uint8(f0),[ '..\ren1\q' num2str(1) '.bmp']);
-% f0=f(:,:,1);
-
 figure; imagesc(f0); colormap(gray); axis off; axis equal;
 f0=double(f0);
 
@@ -35,9 +26,9 @@ lamda=.01;sigma=5;h=2;
 
 kernel=fspecial('gaussian',p_s,sigma); %¸ßË¹ºËº¯Êý
 
-phi=double(1-((f0(:,:,1)==BrokenAreaColor) & ...
-            (f0(:,:,2)==BrokenAreaColor) & ...
-            (f0(:,:,3)==BrokenAreaColor)));
+phi=double(1-((f0(:,:,1)==0) & ...
+              (f0(:,:,2)==BrokenAreaColor) & ...
+              (f0(:,:,3)==0)));
 
 phi=padarray(phi,[t_r t_r],'symmetric');
 PHI=phi;
@@ -132,37 +123,38 @@ figure; imagesc(uint8(uwyn)); colormap(gray); axis off; axis equal;
 
 function weight=updateWeight(u0,u,h,kernel,t_r,s_r,p_r,phi,w)
 
-weight=w;
+    weight=w;
 
-for i=1:size(u0,1)
-    for j=1:size(u0,2)
-        for k=1:size(u0,3)
-            
-            i0=i+t_r;
-            j0=j+t_r;
-            
-            W1=u(i0-p_r:i0+p_r,j0-p_r:j0+p_r,k);
-            
-            if sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r)))~=0
-                
-                ii=1;
-                for r=i0-s_r:i0+s_r
-                    jj=1;
-                    for s=j0-s_r:j0+s_r
-                        
-                        if phi(r,s)~=0
-                            
-                            W2=u(r-p_r:r+p_r,s-p_r:s+p_r,k);
-                            d=sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r).*kernel.*(W1-W2).^2));
-                            weight(ii,jj,i,j,k)=exp(-d/(h*h));
-                            
+    for i=1:size(u0,1)
+        for j=1:size(u0,2)
+            for k=1:size(u0,3)
+
+                i0=i+t_r;
+                j0=j+t_r;
+
+                W1=u(i0-p_r:i0+p_r,j0-p_r:j0+p_r,k);
+
+                if sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r)))~=0
+
+                    ii=1;
+                    for r=i0-s_r:i0+s_r
+                        jj=1;
+                        for s=j0-s_r:j0+s_r
+
+                            if phi(r,s)~=0
+
+                                W2=u(r-p_r:r+p_r,s-p_r:s+p_r,k);
+                                d=sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r).*kernel.*(W1-W2).^2));
+                                weight(ii,jj,i,j,k)=exp(-d/(h*h));
+
+                            end
+
+                            jj=jj+1;
                         end
-                        
-                        jj=jj+1;
+                        ii=ii+1;
                     end
-                    ii=ii+1;
+
                 end
-                
             end
         end
     end
@@ -170,43 +162,44 @@ end
 
 function weight=updateWeight2(u0,u,h,kernel,t_r,s_r,p_r,phi,PHI,w)
 
-weight=w;
+    weight=w;
 
-for i=1:size(u0,1)
-    for j=1:size(u0,2)
-        for k=1:size(u0,3)
-            
-            i0=i+t_r;
-            j0=j+t_r;
-            
-            if PHI(i0,j0)==0
-                
-                W1=u(i0-p_r:i0+p_r,j0-p_r:j0+p_r,k);
-                
-                if sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r)))~=0
-                    
-                    ii=1;
-                    for r=i0-s_r:i0+s_r
-                        jj=1;
-                        for s=j0-s_r:j0+s_r
-                            
-                            if phi(r,s)~=0
-                                
-                                W2=u(r-p_r:r+p_r,s-p_r:s+p_r,k);
-                                d=sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r).*kernel.*(W1-W2).^2));
-                                weight(ii,jj,i,j,k)=exp(-d/(h*h));
-                                
+    for i=1:size(u0,1)
+        for j=1:size(u0,2)
+            for k=1:size(u0,3)
+
+                i0=i+t_r;
+                j0=j+t_r;
+
+                if PHI(i0,j0)==0
+
+                    W1=u(i0-p_r:i0+p_r,j0-p_r:j0+p_r,k);
+
+                    if sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r)))~=0
+
+                        ii=1;
+                        for r=i0-s_r:i0+s_r
+                            jj=1;
+                            for s=j0-s_r:j0+s_r
+
+                                if phi(r,s)~=0
+
+                                    W2=u(r-p_r:r+p_r,s-p_r:s+p_r,k);
+                                    d=sum(sum(phi(i0-p_r:i0+p_r,j0-p_r:j0+p_r).*kernel.*(W1-W2).^2));
+                                    weight(ii,jj,i,j,k)=exp(-d/(h*h));
+
+                                end
+
+                                jj=jj+1;
                             end
-                            
-                            jj=jj+1;
+                            ii=ii+1;
                         end
-                        ii=ii+1;
+
                     end
-                    
+
                 end
-                
+
             end
-            
         end
     end
 end
